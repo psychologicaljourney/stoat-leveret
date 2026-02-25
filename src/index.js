@@ -34,7 +34,6 @@ loadCommands();
 
 client.on("ready", async () =>{
     logger.info(`Logged in as ${client.user.username}`);
-    client.user.status = ""; 
 });
 
 client.on("messageCreate", async (msg) =>{
