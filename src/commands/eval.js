@@ -1,11 +1,11 @@
 import ivm from "isolated-vm";
-import { isEmpty } from "../util/Util.js";
+import { evalString, isEmpty } from "../util/Util.js";
 import logger from "../logger.js";
 
 
 export default {
     name: "eval",
-    alias: [],
+    alias: ["e"],
     memLimit: 8,
      /**
      * @param {Array} args 
@@ -17,11 +17,9 @@ export default {
             msg.reply("⛔ Can't eval an empty script.");
         }else{
             try{
-                const isolate = new ivm.Isolate({memoryLimit: this.memLimit});
-                const script = isolate.compileScriptSync(code);
-                const context = isolate.createContextSync();
-                const result = context.eval(code).then(function(result){
-                    logger.debug(result);
+                const ret = code.includes("return") ? "" : "return";
+                let eStr = `function eval(){${ret} ${code}} eval();`;
+                evalString(eStr, this.memLimit).then(function(result){
                     if(result === undefined){
                         msg.reply("⛔ Script returned nothing.");
                     }else if(!isEmpty(result.toString())){

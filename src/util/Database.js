@@ -6,7 +6,7 @@ const tagdb = new Database("./src/db/tags.db", {fileMustExist: true});
 
 function initDB(){
     //tagdb.exec("DROP TABLE tags;")
-    tagdb.exec("CREATE TABLE IF NOT EXISTS tags(tag_name TEXT PRIMARY KEY, content TEXT NOT NULL, owner TEXT NOT NULL)");
+    tagdb.exec("CREATE TABLE IF NOT EXISTS tags(tag_name TEXT PRIMARY KEY, content TEXT NOT NULL, owner TEXT NOT NULL, type TEXT NOT NULL)");
 }
 
 function getTag(tag_name){
@@ -22,8 +22,8 @@ function tagExists(tag_name){
     return (exists.row_exists == 1);
 }
 
-function addTag(tag_name, content, owner){
-    tagdb.exec(`INSERT INTO tags (tag_name, content, owner) VALUES ('${tag_name}', '${content}', '${owner}');`);
+function addTag(tag_name, content, owner, type="tag"){
+    tagdb.exec(`INSERT INTO tags (tag_name, content, owner, type) VALUES ('${tag_name}', '${content}', '${owner}', '${type}');`);
 }
 
 function editTag(tag_name, new_content){

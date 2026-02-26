@@ -19,7 +19,7 @@ export default {
             }else if(tagExists(args[1])){
                 msg.reply(`⚠️ Tag **${args[1]}** already exists, and is owned by \`${getOwner(args[1])}\``);
             }else{
-                addTag(args[1], content, `${msg.author.username}#${msg.author.discriminator}`);
+                addTag(args[1], content,`${msg.author.username}#${msg.author.discriminator}`);
                 msg.reply(`✅ Created tag ${args[1]}`);
             }
         
