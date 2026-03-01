@@ -1,7 +1,7 @@
 # stoat-leveret
 
 ## Running the bot
-1. must have a `.env` file inside the main directory and a `tags.db` inside `src/db`
+1. must have a `.env` file inside the main directory and `tags.db`, `perms.db` and `reminder.db` inside `src/db`
 2. run with npm start
 
 ## Frequently Asked Questions

@@ -1,6 +1,7 @@
 import { Message, User } from "stoat.js";
 import ivm from "isolated-vm";
 import logger from "../logger.js";
+import * as chrono from "chrono-node";
 
 /**
  * @param {String} str 
@@ -99,5 +100,8 @@ function isScriptTag(tag_content){
     return tag_content.includes("```javascript") || tag_content.includes("```js");
 }
 
+function stringToEpoch(time){
+    return Math.round(chrono.parseDate(time).getTime()/100);
+}
 
-export {isEmpty, authorToId, evalString, tagData, cleanScriptTag, isScriptTag, evalTag}
+export {isEmpty, authorToId, evalString, tagData, cleanScriptTag, isScriptTag, evalTag, stringToEpoch}

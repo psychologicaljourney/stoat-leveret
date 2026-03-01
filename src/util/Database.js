@@ -3,10 +3,17 @@ import Database from "better-sqlite3";
 import { isEmpty, isScriptTag } from "./Util.js";
 
 const tagdb = new Database("./src/db/tags.db", {fileMustExist: true});
+const permsdb = new Database("./src/db/perms.db", {fileMustExist: true});
+const reminderdb = new Database("./src/db/reminder.db", {fileMustExist: true});
+
+const tagDBInit = "CREATE TABLE IF NOT EXISTS tags(tag_name TEXT PRIMARY KEY, content TEXT NOT NULL, owner TEXT NOT NULL, type TEXT NOT NULL)";
+const permsDBInit = "CREATE TABLE IF NOT EXISTS groups(group_name TEXT PRIMARY KEY, level NUMBER NOT NULL, members TEXT NOT NULL)";
+const reminderDBInit = "CREATE TABLE IF NOT EXISTS reminders(time NUMBER PRIMARY KEY)"
 
 function initDB(){
     //tagdb.exec("DROP TABLE tags;")
-    tagdb.exec("CREATE TABLE IF NOT EXISTS tags(tag_name TEXT PRIMARY KEY, content TEXT NOT NULL, owner TEXT NOT NULL, type TEXT NOT NULL)");
+    tagdb.exec(tagDBInit);
+    //permsdb.exec(permsDBInit);
 }
 
 function getTag(tag_name){
@@ -42,6 +49,14 @@ function ownsTag(tag_name, owner){
     if(!tagExists(tag_name))
         return undefined
     return (getOwner(tag_name) == owner)
+}
+/**
+ * 
+ * @param {String} user_id 
+ * @returns {{group_name: String, level: int}}
+ */
+function getGroup(user_id){
+    
 }
 
 function getOwner(tag_name){

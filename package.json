@@ -20,6 +20,7 @@
   "homepage": "https://github.com/psychologicaljourney/stoat-leveret#readme",
   "dependencies": {
     "better-sqlite3": "^12.6.2",
+    "chrono-node": "^2.9.0",
     "isolated-vm": "^6.0.2",
     "stoat.js": "^7.3.6",
     "winston": "^3.19.0"
