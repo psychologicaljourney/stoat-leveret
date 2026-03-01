@@ -1,7 +1,7 @@
 import { Message } from "stoat.js";
 import logger from "../logger.js";
-import { authorToId, isEmpty } from "../util/Util.js";
-import { addTag, deleteTag, editTag, getOwner, getTag, ownsTag, searchTags, tagExists } from "../util/Database.js";
+import { authorToId, cleanScriptTag, evalString, evalTag, isEmpty, isScriptTag } from "../util/Util.js";
+import { addTag, deleteTag, editTag, getOwner, getTag, getTagType, ownsTag, searchTags, tagExists } from "../util/Database.js";
 
 
 export default {
@@ -19,7 +19,11 @@ export default {
             }else if(tagExists(args[1])){
                 msg.reply(`⚠️ Tag **${args[1]}** already exists, and is owned by \`${getOwner(args[1])}\``);
             }else{
-                addTag(args[1], content,`${msg.author.username}#${msg.author.discriminator}`);
+                if(isScriptTag(content)){
+                    addTag(args[1], cleanScriptTag(content),`${msg.author.username}#${msg.author.discriminator}`, "script");
+                }else{
+                    addTag(args[1], content,`${msg.author.username}#${msg.author.discriminator}`);
+                }
                 msg.reply(`✅ Created tag ${args[1]}`);
             }
         
@@ -62,13 +66,29 @@ export default {
                 deleteTag(args[1]);
                 msg.reply(`✅ Deleted tag ${args[1]}`);
             }
-        }else if(!isEmpty(args[0])){ // %t [name]
+        }else if(args[0] == "raw"){
+            if(isEmpty(args[1])){
+                msg.reply(`ℹ️ %tag **raw** \`name\``);
+            }else if(!tagExists(args[1])){
+                msg.reply(`⚠️ Tag **${args[1]}** doesn't exist.`);
+            }else{
+                const t = getTag(args[1]);
+                msg.reply(t);
+            }
+        }else if(!isEmpty(args[0]) && args[0] !== undefined){ // %t [name]
             const t = getTag(args[0]);
             if(t === undefined){
                 msg.reply(`⚠️ Tag **${args[0]}** doesn't exist.`);
-            }else {
-               msg.reply(getTag(args[0]));
+            }else { 
+                if(getTagType(args[0]) == "script"){
+                    const content = args.splice(2).join(' ');
+                    evalTag(cleanScriptTag(t), msg, content);
+                }else{
+                    msg.reply(t);
+                }
             }
+        }else{
+            msg.reply(`ℹ️ %**tag** \`add|edit|delete|owner|search|raw\` **tag name** \`[tag args]\``);
         }
     }
     

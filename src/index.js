@@ -38,9 +38,13 @@ client.on("ready", async () =>{
 
 client.on("messageCreate", async (msg) =>{
     if(msg.content.startsWith('%')){
-        const args = msg.content.toLowerCase().split(' ');
+        const cmd = msg.content.toLowerCase().split(' ');
+        cmd[0] = cmd[0].slice(1)
+        const command = cmd.shift()
+        
+        const args = msg.content.split(' ');
         args[0] = args[0].slice(1)
-        const command = args.shift()
+        args.shift()
         if(commands[command] !== undefined){
             await commands[command].execute(args, msg);
         }

@@ -1,6 +1,6 @@
 import logger from "../logger.js";
 import Database from "better-sqlite3";
-import { isEmpty } from "./Util.js";
+import { isEmpty, isScriptTag } from "./Util.js";
 
 const tagdb = new Database("./src/db/tags.db", {fileMustExist: true});
 
@@ -11,7 +11,7 @@ function initDB(){
 
 function getTag(tag_name){
     if(tagExists(tag_name))
-        return tagdb.prepare(`SELECT content FROM tags WHERE tag_name='${tag_name}'`).get();
+        return tagdb.prepare(`SELECT content FROM tags WHERE tag_name='${tag_name}'`).get().content;
     return undefined
 }
 
@@ -27,7 +27,10 @@ function addTag(tag_name, content, owner, type="tag"){
 }
 
 function editTag(tag_name, new_content){
-    tagdb.exec(`UPDATE tags SET content = '${new_content}' WHERE tag_name='${tag_name}'`)
+    if(isScriptTag(new_content)){
+        tagdb.exec(`UPDATE tags SET type='script' WHERE tag_name='${tag_name}'`);
+    }
+    tagdb.exec(`UPDATE tags SET content = '${new_content}' WHERE tag_name='${tag_name}'`);
 }
 
 function deleteTag(tag_name){
@@ -54,9 +57,17 @@ function searchTags(query){
     return result;
 }
 
+function getTagType(tag_name){
+    if(tagExists(tag_name)){
+        return tagdb.prepare(`SELECT type FROM tags where tag_name='${tag_name}'`).get().type;
+    }
+
+    return undefined;
+}
+
 function getDatabase(){
     return tagdb;
 }
 
 
-export {getDatabase, initDB, getTag, addTag, tagExists, getOwner, searchTags, editTag, deleteTag, ownsTag}
+export {getDatabase, initDB, getTag, addTag, tagExists, getOwner, searchTags, editTag, deleteTag, ownsTag, getTagType}
